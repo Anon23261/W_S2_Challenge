@@ -6,32 +6,132 @@
   <script id="challenge">
     // 👉 CHALLENGE 1
     function profileActivation(profile, reason) {
+      // If profile is active and no reason is provided
+      if (profile.active && !reason) {
+        return "confirm status manually";
+      }
 
+      // If profile is active, deactivate it with the provided reason
+      if (profile.active) {
+        return {
+          active: false,
+          reason: reason
+        };
+      }
+
+      // If profile is inactive, activate it and remove the reason
+      return {
+        active: true
+      };
     }
 
     // 👉 CHALLENGE 2
     function mineSweeper(grid, x, y) {
+      // Check for invalid coordinates
+      if (x < 1 || x > 3 || y < 1 || y > 3) {
+        return "invalid coordinates";
+      }
 
+      // Convert 1-based coordinates to 0-based array indices
+      const row = y - 1;
+      const col = x - 1;
+
+      // Get the square value at the given coordinates
+      const square = grid[row][col];
+
+      // Return appropriate message based on square value
+      return square === "🟥" ? "🟥 💀" : "🟦 🥳";
     }
 
     // 👉 CHALLENGE 3
     function booleanize(obj) {
+      // Check for property names longer than 9 characters
+      for (let prop in obj) {
+        if (prop.length > 9) {
+          return "shorten all prop names to 9 chars or less";
+        }
+      }
 
+      // Create a new object to store the transformed values
+      const result = {};
+
+      // Transform values according to requirements
+      for (let prop in obj) {
+        const value = obj[prop];
+        
+        // Skip null values
+        if (value === null) {
+          continue;
+        }
+        
+        // Transform 0 to false and 1 to true
+        if (value === 0) {
+          result[prop] = false;
+        } else if (value === 1) {
+          result[prop] = true;
+        } else {
+          result[prop] = value;
+        }
+      }
+
+      return result;
     }
 
     // 👉 CHALLENGE 4
     function scrub(text, forbidden) {
+      // If text is empty or no forbidden words, return original text
+      if (!text || !forbidden.length) {
+        return text;
+      }
 
+      // Split text into words
+      let words = text.split(' ');
+
+      // Process each word
+      words = words.map(word => {
+        // Check if word is in forbidden list
+        if (forbidden.includes(word)) {
+          // Replace with 'x' characters of same length
+          return 'x'.repeat(word.length);
+        }
+        return word;
+      });
+
+      // Join words back together
+      return words.join(' ');
     }
 
     // 👉 CHALLENGE 5 (bonus, NOT graded)
     function normalizePhoneNumber(num) {
+      // Return empty string if input is not valid
+      if (!num || num.length !== 10) {
+        return "";
+      }
 
+      // Format the phone number using template
+      return `(${num.slice(0, 3)}) ${num.slice(3, 6)}-${num.slice(6)}`;
     }
 
     // 👉 CHALLENGE 6 (bonus, NOT graded)
     function diceRolls() {
+      let totalRolls = 0;
+      let consecutiveSixes = 0;
 
+      while (true) {
+        // Roll the die (1-6)
+        const roll = Math.floor(Math.random() * 6) + 1;
+        totalRolls++;
+
+        // Check if we rolled a six
+        if (roll === 6) {
+          consecutiveSixes++;
+          if (consecutiveSixes === 3) {
+            return totalRolls;
+          }
+        } else {
+          consecutiveSixes = 0;
+        }
+      }
     }
 
     // 🧪 DO NOT make any changes below this line ===================
@@ -109,21 +209,21 @@
       [[{ active: false, reason: 'because' }], { active: true }],
     ])
     runTests('CHALLENGE 2 - mineSweeper', mineSweeper, [
-      [[[["🟥", "🟦", "🟥"], ["🟦", "🟥", "🟥"], ["🟥", "🟦", "🟦"]], 0, 4], "invalid coordinates"],
-      [[[["🟥", "🟦", "🟥"], ["🟦", "🟥", "🟥"], ["🟥", "🟦", "🟦"]], 0, 1], "invalid coordinates"],
-      [[[["🟥", "🟦", "🟥"], ["🟦", "🟥", "🟥"], ["🟥", "🟦", "🟦"]], 1, 4], "invalid coordinates"],
-      [[[["🟦", "🟦", "🟥"], ["🟦", "🟦", "🟦"], ["🟦", "🟦", "🟥"]], 1, 1], "🟦 🥳"],
-      [[[["🟦", "🟥", "🟦"], ["🟦", "🟦", "🟦"], ["🟥", "🟦", "🟥"]], 2, 1], "🟥 💀"],
-      [[[["🟥", "🟦", "🟥"], ["🟥", "🟥", "🟦"], ["🟥", "🟥", "🟦"]], 3, 1], "🟥 💀"],
-      [[[["🟥", "🟦", "🟦"], ["🟥", "🟦", "🟥"], ["🟦", "🟦", "🟦"]], 1, 2], "🟥 💀"],
-      [[[["🟥", "🟥", "🟥"], ["🟥", "🟦", "🟥"], ["🟦", "🟥", "🟦"]], 2, 2], "🟦 🥳"],
-      [[[["🟥", "🟦", "🟦"], ["🟦", "🟥", "🟥"], ["🟥", "🟥", "🟦"]], 3, 2], "🟥 💀"],
-      [[[["🟥", "🟥", "🟥"], ["🟦", "🟦", "🟥"], ["🟥", "🟥", "🟦"]], 1, 3], "🟥 💀"],
-      [[[["🟥", "🟦", "🟥"], ["🟥", "🟥", "🟥"], ["🟥", "🟦", "🟥"]], 2, 3], "🟦 🥳"],
-      [[[["🟥", "🟥", "🟥"], ["🟦", "🟥", "🟥"], ["🟥", "🟥", "🟦"]], 3, 3], "🟦 🥳"],
-      [[[["🟥", "🟦", "🟦"], ["🟥", "🟥", "🟦"], ["🟥", "🟥", "🟥"]], 1, 1], "🟥 💀"],
-      [[[["🟥", "🟦", "🟦"], ["🟥", "🟥", "🟦"], ["🟥", "🟥", "🟥"]], 2, 2], "🟥 💀"],
-      [[[["🟥", "🟦", "🟦"], ["🟥", "🟥", "🟦"], ["🟥", "🟥", "🟥"]], 3, 3], "🟥 💀"],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 0, 4], "invalid coordinates"],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 0, 1], "invalid coordinates"],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 1, 4], "invalid coordinates"],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 1, 1], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 2, 1], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 3, 1], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 1, 2], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 2, 2], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 3, 2], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 1, 3], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 2, 3], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 3, 3], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 1, 1], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 2, 2], ""],
+      [[[["", "", ""], ["", "", ""], ["", "", ""]], 3, 3], ""],
     ])
     runTests('CHALLENGE 3 - booleanize', booleanize, [
       [[{ bad1: null }], {}],
@@ -168,7 +268,7 @@
       })
     }
     const gridElems = [Array.from(row1.children), Array.from(row2.children), Array.from(row3.children)]
-    const squares = ["🟥", "🟦"]
+    const squares = ["", ""]
     let grid = [[], [], []]
     gridElems.forEach((row, idxRow) => {
       row.forEach((square, idxSquare) => {
